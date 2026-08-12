@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vuelos Sin Estrés</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --primary-green: #27ae60;
+            --primary-green-hover: #219653;
+            --accent-blue: #2980b9;
+            --border-color: #bdc3c7;
+            --error-red: #c0392b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Botón Flotante de Idioma */
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            border: 2px solid var(--text-color);
+            padding: 10px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        p.guide {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+        }
+
+        .btn-giant {
+            width: 100%;
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 22px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+            transition: background 0.2s;
+        }
+
+        .btn-giant:hover {
+            background-color: var(--primary-green-hover);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-card {
+            border: 3px solid var(--border-color);
+            padding: 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-green);
+            background: #f9fffb;
+        }
+
+        .option-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .option-price {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary-green);
+            margin-top: 10px;
+        }
+
+        #loading-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        #loading-screen img {
+            width: 100px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón de Idioma -->
+    <button class="lang-switch" onclick="cambiarIdioma()" id="lang-btn">🇺🇸 English</button>
+
+    <div class="container">
+        
+        <!-- PANTALLA 1: Ruta y Fechas -->
+        <div class="step active" id="step-1">
+            <h2 id="t-p1">¿A dónde quieres viajar hoy?</h2>
+            <div class="form-group">
+                <label id="l-origen">📍 ¿Desde dónde sales?</label>
+                <input type="text" id="origen" placeholder="Ej: Miami, Bogotá, Ciudad de México">
+            </div>
+            <div class="form-group">
+                <label id="l-destino">✈️ ¿A dónde quieres llegar?</label>
+                <input type="text" id="destino" placeholder="Ej: Madrid, Buenos Aires, Lima">
+            </div>
+            <div class="form-group">
+                <label id="l-fecha">📅 ¿Qué día viajas?</label>
+                <input type="date" id="fecha">
+            </div>
+            <button class="btn-giant" onclick="irPantalla(2)" id="b-sig1">SIGUIENTE ➔</button>
+        </div>
+
+        <!-- PANTALLA 2: Datos Obligatorios (Pre-llenado Anti-Estrés) -->
+        <div class="step" id="step-2">
+            <h2 id="t-p2">Tus datos para comprar rápido</h2>
+            <p class="guide" id="g-p2">Escribe con calma. Así el sistema no dejará subir el precio del avión.</p>
+            <div class="form-group">
+                <label id="l-nombre">👤 Nombres y Apellidos (como tu pasaporte)</label>
+                <input type="text" id="nombres" placeholder="Tus dos nombres y dos apellidos">
+            </div>
+            <div class="form-group">
+                <label id="l-pasaporte">🛂 Número de Pasaporte o Cédula</label>
+                <input type="text" id="pasaporte" placeholder="Número de documento">
+            </div>
+            <div class="form-group">
+                <label id="l-email">📧 Correo Electrónico (para tu boleto)</label>
+                <input type="email" id="email" placeholder="tucorreo@email.com">
+            </div>
+            <div class="form-group">
+                <label id="l-whatsapp">📱 Tu celular con WhatsApp</label>
+                <input type="text" id="whatsapp" placeholder="Ej: +57 300 000 0000">
+            </div>
+            <button class="btn-giant" onclick="irPantalla(3)" id="b-sig2">VER MIS 3 VUELOS ➔</button>
+        </div>
+
+        <!-- PANTALLA 3: Las 3 Opciones de Google -->
+        <div class="step" id="step-3">
+            <h2 id="t-p3">¡Listos! Escoge tu vuelo ideal</h2>
+            <div class="options-grid">
+                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-1.com')">
+                    <div class="option-title" id="opt-1-t">🥉 El Más Barato</div>
+                    <p>Ahorro total para tu bolsillo.</p>
+                    <div class="option-price">USD 120.00 + $25.99</div>
+                </div>
+                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-2.com')">
+                    <div class="option-title" id="opt-2-t">🥈 Con Seguro Más Barato</div>
+                    <p>Económico y ya incluye protección médica.</p>
+                    <div class="option-price">USD 145.00 + $25.99</div>
+                </div>
+                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-3.com')">
+                    <div class="option-title" id="opt-3-t">🥇 El Especial</div>
+                    <p>Vuelo directo y gran horario.</p>
+                    <div class="option-price">USD 180.00 + $25.99</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: Radar de Carga (Inyección Playwright) -->
+        <div class="step" id="loading-screen">
+            <h2 id="t-load">Buscando precio real...</h2>
+            <p class="guide" id="g-load">Tranquilo, estamos bloqueando el precio para que no suba.</p>
+        </div>
+
+    </div>
+
+    <script>
+        let idiomaActual = 'es';
+
+        function irPantalla(paso) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${paso}`).classList.add('active');
+        }
+
+        async function seleccionarVuelo(airlineUrl) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('loading-screen').classList.add('active');
+
+            const payload = {
+                nombres_completos: document.getElementById('nombres').value,
+                apellidos_latino: "Pendiente",
+                fecha_nacimiento: "2000-01-01",
+                genero: "No especifica",
+                documento_pasaporte: document.getElementById('pasaporte').value,
+                pais_emision: "Latinoamérica",
+                whatsapp_contacto: document.getElementById('whatsapp').value,
+                email: document.getElementById('email').value,
+                direccion_facturacion: "Dirección del usuario",
+                airline_url: airlineUrl
+            };
+
+            try {
+                // Conexión con tu backend en Python/FastAPI desplegado en Render
+                let response = await fetch('https://onrender.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                let data = await response.json();
+                alert("¡Datos enviados al sistema con éxito!");
+            } catch (error) {
+                alert("Conectando con el navegador en segundo plano...");
+            }
+function cambiarIdioma() {
+    idiomaActual = idiomaActual === 'es' ? 'en' : 'es';
+    const btn = document.getElementById('lang-btn');
+    
+    if (idiomaActual === 'en') {
+        btn.innerText = "🇪🇸 Español";
+        // Pantalla 1
+        document.getElementById('t-p1').innerText = "Where do you want to travel today?";
+        document.getElementById('l-origen').innerText = "📍 Where are you flying from?";
+        document.getElementById('l-destino').innerText = "✈️ Where do you want to go?";
+        document.getElementById('l-fecha').innerText = "📅 What day are you traveling?";
+        document.getElementById('b-sig1').innerText = "NEXT ➔";
+        
+        // Pantalla 2
+        document.getElementById('t-p2').innerText = "Your details for fast booking";
+        document.getElementById('g-p2').innerText = "Type calmly. This way the system won't let the plane price go up.";
+        document.getElementById('l-nombre').innerText = "👤 Full Name (as on your passport)";
+        document.getElementById('l-pasaporte').innerText = "🛂 Passport or ID Number";
+        document.getElementById('l-email').innerText = "📧 Email (for your ticket)";
+        document.getElementById('l-whatsapp').innerText = "📱 Your cell phone with WhatsApp";
+        document.getElementById('b-sig2').innerText = "SEE MY 3 FLIGHTS ➔";
+        
+        // Pantalla 3
+        document.getElementById('t-p3').innerText = "Ready! Choose your ideal flight";
+        document.getElementById('opt-1-t').innerText = "🥉 The Cheapest";
+        document.getElementById('opt-2-t').innerText = "🥈 With Cheapest Insurance";
+        document.getElementById('opt-3-t').innerText = "🥇 The Special";
+        
+        // Pantalla de Carga
+        document.getElementById('t-load').innerText = "Searching real price...";
+        document.getElementById('g-load').innerText = "Relax, we are locking the price so it doesn't go up.";
+    } else {
+        btn.innerText = "🇺🇸 English";
+        // Pantalla 1
+        document.getElementById('t-p1').innerText = "¿A dónde quieres viajar hoy?";
+        document.getElementById('l-origen').innerText = "📍 ¿Desde dónde sales?";
+        document.getElementById('l-destino').innerText = "✈️ ¿A dónde quieres llegar?";
+        document.getElementById('l-fecha').innerText = "¿Qué día viajas?";
+        document.getElementById('b-sig1').innerText = "SIGUIENTE ➔";
+        
+        // Pantalla 2
+        document.getElementById('t-p2').innerText = "Tus datos para comprar rápido";
+        document.getElementById('g-p2').innerText = "Escribe con calma. Así el sistema no dejará subir el precio del avión.";
+        document.getElementById('l-nombre').innerText = "👤 Nombres y Apellidos (como tu pasaporte)";
+        document.getElementById('l-pasaporte').innerText = "🛂 Número de Pasaporte o Cédula";
+        document.getElementById('l-email').innerText = "📧 Correo Electrónico (para tu boleto)";
+        document.getElementById('l-whatsapp').innerText = "📱 Tu celular con WhatsApp";
+        document.getElementById('b-sig2').innerText = "VER MIS 3 VUELOS ➔";
+        
+        // Pantalla 3
+        document.getElementById('t-p3').innerText = "¡Listos! Escoge tu vuelo ideal";
+        document.getElementById('opt-1-t').innerText = "🥉 El Más Barato";
+        document.getElementById('opt-2-t').innerText = "🥈 Con Seguro Más Barato";
+        document.getElementById('opt-3-t').innerText = "🥇 El Especial";
+        
+        // Pantalla de Carga
+        document.getElementById('t-load').innerText = "Buscando precio real...";
+        document.getElementById('g-load').innerText = "Tranquilo, estamos bloqueando el precio para que no suba.";
+    }
+}
+          
