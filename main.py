@@ -3,11 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import stripe
 import os
+from scraper import ejecutar_inyeccion  # Importamos nuestro módulo Playwright
 
-# Inicializamos la app
 app = FastAPI(title="Vuelos Sin Estrés API", version="1.0")
 
-# Permitir conexiones desde tu interfaz frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,11 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuración de Stripe (Asegúrate de poner tus llaves reales en Render como variables de entorno)
 stripe.api_key = os.getenv("STRIPE_API_KEY", "sk_test_tu_llave_de_prueba")
 
-# Modelo de datos obligatorios (Escudo Anti-Estrés)
-class UserTravelData(BaseModel
+class UserTravelData(BaseModel):
     nombres_completos: str
     apellidos_latino: str
     fecha_nacimiento: str
@@ -30,23 +27,38 @@ class UserTravelData(BaseModel
     whatsapp_contacto: str
     email: str
     direccion_facturacion: str
+    airline_url: str  # URL de la aerolínea elegida por el usuario
 
 @app.get("/")
 def read_root():
     return {"status": "El motor de Vuelos Sin Estrés está activo y listo"}
 
-@app.post("/api/guardar-datos-viajero")
-def guardar_datos(data: UserTravelData):
-    # Aquí guardamos temporalmente los datos obligatorios antes de mostrar las 3 opciones
-    # para ganar velocidad y bloquear el algoritmo de la aerolínea.
+@app.post("/api/seleccionar-y-comprar-vuelo")
+async def seleccionar_y_comprar(data: UserTravelData):
+    """
+    Endpoint principal: El cliente elige su vuelo y el bot dispara 
+    la inyección a la velocidad de la luz para ganarle al algoritmo.
+    """
+    # Convertimos los datos del modelo a diccionario para el scraper
+    datos_dict = data.dict()
+    
+    # Ejecutamos la automatización en segundo plano con Playwright
+    resultado_scraper = await ejecutar_inyeccion(data.airline_url, datos_dict)
+    
+    if resultado_scraper.get("status") == "error":
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error en la automatización: {resultado_scraper.get('detalle')}"
+        )
+        
     return {
-        "mensaje": "Datos obligatorios guardados con éxito. Listos para inyección rápida.",
-        "datos_recibidos": data.nombres_completos
+        "success": True,
+        "resultado_navegacion": resultado_scraper
     }
 
 @app.post("/api/cobrar-comision-exito")
 def cobrar_comision(payment_method_id: str, amount: int = 2599):
-    # Cobro condicional de los USD 25.99 (2599 centavos) vía Stripe solo si el vuelo fue exitoso
+    # Cobro condicional de los USD 25.99 vía Stripe solo si el vuelo fue exitoso
     try:
         intent = stripe.PaymentIntent.create(
             amount=amount,
@@ -60,7 +72,6 @@ def cobrar_comision(payment_method_id: str, amount: int = 2599):
         )
         return {"success": True, "payment_intent_id": intent.id}
     except stripe.error.CardError as e:
-        # Aquí se activa la lógica de Hard Lock si la tarjeta de la comisión falla
         raise HTTPException(
             status_code=status.HTTP_402_PAYMENT_REQUIRED,
             detail=f"Fallo en la comisión de servicio: {e.user_message}"
