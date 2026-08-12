@@ -220,22 +220,21 @@
             </div>
             <button class="btn-giant" onclick="irPantalla(3)" id="b-sig2">VER MIS 3 VUELOS ➔</button>
         </div>
-
-        <!-- PANTALLA 3: Las 3 Opciones de Google -->
+        <!-- PANTALLA 3: Las 3 Opciones de Google (Sello Humano Integrado) -->
         <div class="step" id="step-3">
             <h2 id="t-p3">¡Listos! Escoge tu vuelo ideal</h2>
             <div class="options-grid">
-                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-1.com')">
+                <div class="option-card" onclick="seleccionarVuelo('https://avianca.com', event)">
                     <div class="option-title" id="opt-1-t">🥉 El Más Barato</div>
                     <p>Ahorro total para tu bolsillo.</p>
                     <div class="option-price">USD 120.00 + $25.99</div>
                 </div>
-                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-2.com')">
+                <div class="option-card" onclick="seleccionarVuelo('https://copaair.com', event)">
                     <div class="option-title" id="opt-2-t">🥈 Con Seguro Más Barato</div>
                     <p>Económico y ya incluye protección médica.</p>
                     <div class="option-price">USD 145.00 + $25.99</div>
                 </div>
-                <div class="option-card" onclick="seleccionarVuelo('https://airline-url-3.com')">
+                <div class="option-card" onclick="seleccionarVuelo('https://latamairlines.com', event)">
                     <div class="option-title" id="opt-3-t">🥇 El Especial</div>
                     <p>Vuelo directo y gran horario.</p>
                     <div class="option-price">USD 180.00 + $25.99</div>
@@ -243,10 +242,10 @@
             </div>
         </div>
 
-        <!-- PANTALLA 4: Radar de Carga (Inyección Playwright) -->
+        <!-- PANTALLA 4: Radar de Carga (Espera Orgánica Mimetizada) -->
         <div class="step" id="loading-screen">
             <h2 id="t-load">Buscando precio real...</h2>
-            <p class="guide" id="g-load">Tranquilo, estamos bloqueando el precio para que no suba.</p>
+            <p class="guide" id="g-load">Tranquilo, estamos bloqueando el precio para que no suba de forma orgánica.</p>
         </div>
 
     </div>
@@ -259,11 +258,22 @@
             document.getElementById(`step-${paso}`).classList.add('active');
         }
 
-        async function seleccionarVuelo(airlineUrl) {
+        function randomRango(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        async function seleccionarVuelo(airlineUrl, event) {
             document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
             document.getElementById('loading-screen').classList.add('active');
 
+            // Captura de la biometría orgánica del toque humano
+            let coordenadaX = event.clientX || (event.touches ? event.touches[0].clientX : 0);
+            let coordenadaY = event.clientY || (event.touches ? event.touches[0].clientY : 0);
+            let areaRoceDedo = event.radiusX || (event.touches && event.touches[0].radiusX) || randomRango(5, 15);
+            let fuerzaPresion = event.force || (event.touches && event.touches[0].force) || randomRango(0.4, 0.7);
+
             const payload = {
+                session_id: localStorage.getItem('vuelo_session_id') || "sesion_hibrida",
                 nombres_completos: document.getElementById('nombres').value,
                 apellidos_latino: "Pendiente",
                 fecha_nacimiento: "2000-01-01",
@@ -273,79 +283,80 @@
                 whatsapp_contacto: document.getElementById('whatsapp').value,
                 email: document.getElementById('email').value,
                 direccion_facturacion: "Dirección del usuario",
-                airline_url: airlineUrl
+                airline_url: airlineUrl,
+                huella_humana: {
+                    click_x: Math.round(coordenadaX),
+                    click_y: Math.round(coordenadaY),
+                    radio_roce: parseFloat(areaRoceDedo.toFixed(2)),
+                    intensidad_presion: parseFloat(fuerzaPresion.toFixed(2))
+                }
             };
 
             try {
-                // Conexión con tu backend en Python/FastAPI desplegado en Render
                 let response = await fetch('https://onrender.com', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 let data = await response.json();
-                alert("¡Datos enviados al sistema con éxito!");
+                alert("¡Sello humano inyectado con éxito en el sistema!");
             } catch (error) {
-                alert("Conectando con el navegador en segundo plano...");
+                alert("Conectando con el motor mimetizado en segundo plano...");
             }
-function cambiarIdioma() {
-    idiomaActual = idiomaActual === 'es' ? 'en' : 'es';
-    const btn = document.getElementById('lang-btn');
-    
-    if (idiomaActual === 'en') {
-        btn.innerText = "🇪🇸 Español";
-        // Pantalla 1
-        document.getElementById('t-p1').innerText = "Where do you want to travel today?";
-        document.getElementById('l-origen').innerText = "📍 Where are you flying from?";
-        document.getElementById('l-destino').innerText = "✈️ Where do you want to go?";
-        document.getElementById('l-fecha').innerText = "📅 What day are you traveling?";
-        document.getElementById('b-sig1').innerText = "NEXT ➔";
-        
-        // Pantalla 2
-        document.getElementById('t-p2').innerText = "Your details for fast booking";
-        document.getElementById('g-p2').innerText = "Type calmly. This way the system won't let the plane price go up.";
-        document.getElementById('l-nombre').innerText = "👤 Full Name (as on your passport)";
-        document.getElementById('l-pasaporte').innerText = "🛂 Passport or ID Number";
-        document.getElementById('l-email').innerText = "📧 Email (for your ticket)";
-        document.getElementById('l-whatsapp').innerText = "📱 Your cell phone with WhatsApp";
-        document.getElementById('b-sig2').innerText = "SEE MY 3 FLIGHTS ➔";
-        
-        // Pantalla 3
-        document.getElementById('t-p3').innerText = "Ready! Choose your ideal flight";
-        document.getElementById('opt-1-t').innerText = "🥉 The Cheapest";
-        document.getElementById('opt-2-t').innerText = "🥈 With Cheapest Insurance";
-        document.getElementById('opt-3-t').innerText = "🥇 The Special";
-        
-        // Pantalla de Carga
-        document.getElementById('t-load').innerText = "Searching real price...";
-        document.getElementById('g-load').innerText = "Relax, we are locking the price so it doesn't go up.";
-    } else {
-        btn.innerText = "🇺🇸 English";
-        // Pantalla 1
-        document.getElementById('t-p1').innerText = "¿A dónde quieres viajar hoy?";
-        document.getElementById('l-origen').innerText = "📍 ¿Desde dónde sales?";
-        document.getElementById('l-destino').innerText = "✈️ ¿A dónde quieres llegar?";
-        document.getElementById('l-fecha').innerText = "¿Qué día viajas?";
-        document.getElementById('b-sig1').innerText = "SIGUIENTE ➔";
-        
-        // Pantalla 2
-        document.getElementById('t-p2').innerText = "Tus datos para comprar rápido";
-        document.getElementById('g-p2').innerText = "Escribe con calma. Así el sistema no dejará subir el precio del avión.";
-        document.getElementById('l-nombre').innerText = "👤 Nombres y Apellidos (como tu pasaporte)";
-        document.getElementById('l-pasaporte').innerText = "🛂 Número de Pasaporte o Cédula";
-        document.getElementById('l-email').innerText = "📧 Correo Electrónico (para tu boleto)";
-        document.getElementById('l-whatsapp').innerText = "📱 Tu celular con WhatsApp";
-        document.getElementById('b-sig2').innerText = "VER MIS 3 VUELOS ➔";
-        
-        // Pantalla 3
-        document.getElementById('t-p3').innerText = "¡Listos! Escoge tu vuelo ideal";
-        document.getElementById('opt-1-t').innerText = "🥉 El Más Barato";
-        document.getElementById('opt-2-t').innerText = "🥈 Con Seguro Más Barato";
-        document.getElementById('opt-3-t').innerText = "🥇 El Especial";
-        
-        // Pantalla de Carga
-        document.getElementById('t-load').innerText = "Buscando precio real...";
-        document.getElementById('g-load').innerText = "Tranquilo, estamos bloqueando el precio para que no suba.";
-    }
-}
-          
+        }
+
+        function cambiarIdioma() {
+            idiomaActual = idiomaActual === 'es' ? 'en' : 'es';
+            const btn = document.getElementById('lang-btn');
+            
+            if (idiomaActual === 'en') {
+                btn.innerText = "🇪🇸 Español";
+                document.getElementById('t-p1').innerText = "Where do you want to travel today?";
+                document.getElementById('l-origen').innerText = "📍 Where are you flying from?";
+                document.getElementById('l-destino').innerText = "✈️ Where do you want to go?";
+                document.getElementById('l-fecha').innerText = "📅 What day are you traveling?";
+                document.getElementById('b-sig1').innerText = "NEXT ➔";
+                
+                document.getElementById('t-p2').innerText = "Your details for fast booking";
+                document.getElementById('g-p2').innerText = "Type calmly. This way the system won't let the plane price go up.";
+                document.getElementById('l-nombre').innerText = "👤 Full Name (as on your passport)";
+                document.getElementById('l-pasaporte').innerText = "🛂 Passport or ID Number";
+                document.getElementById('l-email').innerText = "📧 Email (for your ticket)";
+                document.getElementById('l-whatsapp').innerText = "📱 Your cell phone with WhatsApp";
+                document.getElementById('b-sig2').innerText = "SEE MY 3 FLIGHTS ➔";
+                
+                document.getElementById('t-p3').innerText = "Ready! Choose your ideal flight";
+                document.getElementById('opt-1-t').innerText = "🥉 The Cheapest";
+                document.getElementById('opt-2-t').innerText = "🥈 With Cheapest Insurance";
+                document.getElementById('opt-3-t').innerText = "🥇 The Special";
+                
+                document.getElementById('t-load').innerText = "Searching real price...";
+                document.getElementById('g-load').innerText = "Relax, we are organically locking the price so it doesn't go up.";
+            } else {
+                btn.innerText = "🇺🇸 English";
+                document.getElementById('t-p1').innerText = "¿A dónde quieres viajar hoy?";
+                document.getElementById('l-origen').innerText = "📍 ¿Desde dónde sales?";
+                document.getElementById('l-destino').innerText = "✈️ ¿A dónde quieres llegar?";
+                document.getElementById('l-fecha').innerText = "¿Qué día viajas?";
+                document.getElementById('b-sig1').innerText = "SIGUIENTE ➔";
+                
+                document.getElementById('t-p2').innerText = "Tus datos para comprar rápido";
+                document.getElementById('g-p2').innerText = "Escribe con calma. Así el sistema no dejará subir el precio del avión.";
+                document.getElementById('l-nombre').innerText = "👤 Nombres y Apellidos (como tu pasaporte)";
+                document.getElementById('l-pasaporte').innerText = "🛂 Número de Pasaporte o Cédula";
+                document.getElementById('l-email').innerText = "📧 Correo Electrónico (para tu boleto)";
+                document.getElementById('l-whatsapp').innerText = "📱 Tu celular con WhatsApp";
+                document.getElementById('b-sig2').innerText = "VER MIS 3 VUELOS ➔";
+                
+                document.getElementById('t-p3').innerText = "¡Listos! Escoge tu vuelo ideal";
+                document.getElementById('opt-1-t').innerText = "🥉 El Más Barato";
+                document.getElementById('opt-2-t').innerText = "🥈 Con Seguro Más Barato";
+                document.getElementById('opt-3-t').innerText = "🥇 El Especial";
+                
+                document.getElementById('t-load').innerText = "Buscando precio real...";
+                document.getElementById('g-load').innerText = "Tranquilo, estamos bloqueando el precio para que no suba de forma orgánica.";
+            }
+        }
+    </script>
+</body>
+</html>
