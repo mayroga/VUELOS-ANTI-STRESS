@@ -143,8 +143,8 @@ def create_checkout_session(payload: CheckoutPayload):
             payment_method_types=['card'],
             line_items=[{'price': price_id, 'quantity': 1}],
             mode='payment' if "SINGLE" in payload.tier else 'subscription',
-            success_url="https://" + os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost:8000") + "/?status=success&folio=" + payload.folio,
-            cancel_url="https://" + os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost:8000") + "/",
+            success_url="https://wellness-travel.onrender.com" + os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost:8000") + "/?status=success&folio=" + payload.folio,
+            cancel_url="https://wellness-travel.onrender.com" + os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost:8000") + "/",
             metadata={'folio_crm': payload.folio, 'billing_tier': payload.tier}
         )
         return {"checkout_url": session.url}
