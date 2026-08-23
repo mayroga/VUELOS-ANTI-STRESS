@@ -256,7 +256,45 @@ this.activarVozAsesorContinuo();
 },
 
 activarSintonizaAcusticaYouTube() {
-    window.open("https://youtube.com", "_blank");
+    console.log("[MAY ROGA] Inicializando catálogo acústico predictivo.");
+    const isEs = this.idiomaActual === 'es';
+    
+    // 5 opciones directas de ultra-lujo listas para reproducir sin barras de búsqueda
+    const poolVideos = isEs ? [
+        { t: "Frecuencia Solfeggio 432Hz — Océano Profundo", url: "https://youtube.com", desc: "Sintonía de aislamiento acústico total." },
+        { t: "Frecuencia Alfa 8Hz — Ondas de Espacio Natural", url: "https://youtube.com", desc: "Descompresión biológica de baja concurrencia." },
+        { t: "Ruido Blanco de Lluvia en Selva Privada", url: "https://youtube.com", desc: "Bloqueo de ruido operativo de oficina." },
+        { t: "Frecuencia de Sanación Zen 528Hz — Calma Pura", url: "https://youtube.com", desc: "Disolución de fricción estratégica." },
+        { t: "Paisajes Sonoros del Desierto Minimalista", url: "https://youtube.com", desc: "Restauración de soberanía cognitiva." }
+    ] : [
+        { t: "432Hz Solfeggio Frequency — Deep Ocean Resonance", url: "https://youtube.com", desc: "Complete acoustic isolation protocol." },
+        { t: "8Hz Alpha Waves — Natural Space Architecture", url: "https://youtube.com", desc: "Low-occupancy biological decompression." },
+        { t: "White Noise — Private Rainforest Ambience", url: "https://youtube.com", desc: "Corporate office friction shielding." },
+        { t: "528Hz Zen Healing Frequency — Pure Mental Calming", url: "https://youtube.com", desc: "Executive decision overload dissolution." },
+        { t: "Minimalist Desert Soundscapes — Pure Focus", url: "https://youtube.com", desc: "Cognitive sovereignty restoration." }
+    ];
+
+    // Acompañamiento verbal por detrás en el idioma del cliente
+    const guionVoz = isEs ? 
+        "Líder. Hemos desplegado 5 frecuencias de sintonía acústica. Le sugerimos activar la primera opción: Ondas de Océano Profundo a 432 Hertz, configurada para disolver la fricción de su entorno." :
+        "Leader. We have deployed 5 acoustic tuning frequencies. We suggest activating the first option: 432 Hertz Deep Ocean Waves, engineered to dissolve your current friction.";
+    
+    this.emitirVoz(guionVoz);
+
+    const stack = document.getElementById('interactiveStack');
+    if (!stack) return;
+
+    let html = `<div style="margin-bottom:15px; font-size:12px; color:var(--gold-champagne); letter-spacing:1px; text-transform:uppercase; font-weight:bold;">${isEs ? "SINTONÍA ACÚSTICA PREDICTIVA" : "PREDICTIVE ACOUSTIC TUNING"}</div>`;
+    poolVideos.forEach((v, i) => {
+        html += `
+            <div style="background:var(--bg-surface); border:1px solid rgba(255,255,255,0.05); padding:14px; border-radius:12px; margin-bottom:10px; text-align:left;">
+                <div style="font-size:13px; font-weight:bold; color:#fff; margin-bottom:4px;">${i+1}. ${v.t}</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">${v.desc}</div>
+                <a class="escape-action-pill" href="${v.url}" target="_blank" style="padding:6px 12px; font-size:10px; text-decoration:none; display:inline-block;">${isEs ? "REPRODUCIR FRECUENCIA" : "PLAY FREQUENCY"}</a>
+            </div>
+        `;
+    });
+    stack.innerHTML = html;
 },
 
 iniciarPulmonVisual() {
@@ -295,28 +333,68 @@ activarVozAsesorContinuo() {
     emitir();
     this.voiceInterval = setInterval(emitir, 45000);
 },
+
 inyectarPasilloEscapeReal(zipCode) {
     const stack = document.getElementById('interactiveStack');
     if (!stack) return;
+
     const isEs = this.idiomaActual === 'es';
-    const titulo = isEs ? "PASILLO DE ACCESO VIP ACTIVADO" : "VIP ACCESS CORRIDOR ACTIVATED";
-    const desc = isEs ? "Sintonía lograda. Su pasaporte prescribe aislamiento físico inmediato en uno de nuestros santuarios fiduciarios:" : "Tuning achieved. Your passport prescribes immediate physical isolation in one of our fiduciary sanctuaries:";
-    const queryEden = encodeURIComponent(`Eden Roc near ${zipCode || 'Miami'}`);
-    const queryAmanera = encodeURIComponent(`Luxury Resort Amanera Playa Grande`);
+    const titulo = isEs ? "SANTUARIOS DE BAJA CONCURRENCIA PRESCRITOS" : "CURATED LOW-OCCUPANCY SANCTUARIES";
     
-    stack.innerHTML = `
-        <div class="vip-escape-panel" style="background: rgba(197,160,89,0.06); border: 1px solid var(--gold-champagne); border-radius: 18px; padding: 20px; text-align: center;"> 
-            <span style="font-size:12px; color:var(--gold-champagne); font-weight:bold; letter-spacing:2px; display:block; margin-bottom:8px;">${titulo}</span> 
-            <p style="font-size:12.5px; margin-bottom:15px; color:#fff; line-height:1.5;">${desc}</p> 
-            <div class="escape-grid"> 
-                <a class="escape-action-pill" href="https://google.com{queryEden}" target="_blank">🏨 Eden Roc GPS</a> 
-                <a class="escape-action-pill" href="https://google.com{queryAmanera}" target="_blank">🏝️ Amanera GPS</a> 
-            </div> 
-            <button class="gold-action-btn" style="margin-top:15px; width:100%;" onclick="KERNEL.finalizarAcompanamientoCRM()"> 
-                ${isEs ? "Compilar Pasaporte Élite" : "Compile Elite Passport"} 
-            </button> 
-        </div>
+    // Las 3 propuestas Élite con imágenes instantáneas nítidas cargadas desde el inicio
+    const santuarios = [
+        {
+            name: "Amanera Resort — Playa Grande",
+            img: "https://unsplash.com",
+            maps: `https://google.com{encodeURIComponent("Luxury Resort Amanera Playa Grande")}`,
+            es_ex: "Casitas de cristal suspendidas en acantilados con aislamiento total. Le conviene porque neutraliza de inmediato su índice de fatiga por decisiones críticas.",
+            en_ex: "Glass casitas suspended on cliffs with radical isolation. Prescribed to instantly neutralize your critical decision fatigue index."
+        },
+        {
+            name: "Eden Roc Sanctuary — Cap Cana",
+            img: "https://unsplash.com",
+            maps: `https://google.com{encodeURIComponent("Eden Roc Cap Cana Private Villas")}`,
+            es_ex: "Bungalows independientes con alberca privada y control estricto de concurrencia. Ideal para restaurar su espacio personal sin alertas.",
+            en_ex: "Standalone bungalows with private pools and strict occupancy controls. Ideal to restore your personal space without structural alerts."
+        },
+        {
+            name: "Amangiri Oasis — Utah Desert",
+            img: "https://unsplash.com",
+            maps: `https://google.com{encodeURIComponent(`Luxury Resort Amangiri Utah near ${zipCode || '33167'}`)}`,
+            es_ex: "Arquitectura monolítica oculta en el cañón profundo. Diseñado para directores que exigen desapego operativo absoluto e inmunidad de entorno.",
+            en_ex: "Monolithic architecture hidden in the deep canyon. Engineered for executives demanding absolute operational detachment and environment immunity."
+        }
+    ];
+
+    // Discurso predictivo por voz de fondo explicando los motivos fiduciarios
+    const discursoExplicativo = isEs ?
+        "Calibración de entorno completada. Hemos bloqueado tres opciones de aislamiento geográfico en Google Maps que cuentan con el menor índice de ocupación física disponible. Hemos adivinado su necesidad: espacio masivo, silencio acústico y cero interrupciones corporativas." :
+        "Environment calibration completed. We have locked three geographical isolation profiles on Google Maps holding the lowest physical occupancy rates available. We have anticipated your directive: massive space, acoustic silence, and zero corporate interruptions.";
+
+    this.emitirVoz(discursoExplicativo);
+
+    let html = `<div style="margin-bottom:15px; font-size:12px; color:var(--gold-champagne); letter-spacing:1px; text-transform:uppercase; font-weight:bold;">${titulo}</div>`;
+    santuarios.forEach((s) => {
+        html += `
+            <div style="background:var(--bg-surface); border:1px solid var(--gold-champagne); border-radius:16px; margin-bottom:15px; overflow:hidden; text-align:left;">
+                <img src="${s.img}" style="width:100%; height:130px; object-fit:cover; display:block;" alt="${s.name}">
+                <div style="padding:15px;">
+                    <div style="font-size:14px; font-weight:bold; color:var(--gold-champagne); margin-bottom:6px;">${s.name}</div>
+                    <p style="font-size:11.5px; color:#eee; line-height:1.4; margin-bottom:12px;">${isEs ? s.es_ex : s.en_ex}</p>
+                    <a class="escape-action-pill" href="${s.maps}" target="_blank" style="background:var(--gold-champagne); color:var(--bg-obsidian); font-weight:bold; text-transform:uppercase; padding:8px 14px; font-size:10px; border-radius:6px; text-decoration:none; display:inline-block;">
+                        ${isEs ? "VER RUTA EN GOOGLE MAPS" : "OPEN GOOGLE MAPS ROUTE"}
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+        <button class="gold-action-btn" style="margin-top:10px; width:100%;" onclick="KERNEL.finalizarAcompanamientoCRM()">
+            ${isEs ? "COMPILAR PASAPORTE ÉLITE" : "COMPILE ELITE PASSPORT"}
+        </button>
     `;
+    stack.innerHTML = html;
 },
 
 finalizarAcompanamientoCRM() {
