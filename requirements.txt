@@ -3,3 +3,6 @@ uvicorn
 playwright
 stripe
 pydantic
+reportlab
+python-multipart
+jinja2
